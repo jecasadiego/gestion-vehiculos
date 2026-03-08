@@ -55,7 +55,34 @@ npm test
 powershell -ExecutionPolicy Bypass -File .\scripts\manual-test-endpoints.ps1
 ```
 
-## Despliegue en Render (desde GitHub)
+## Despliegue en GitHub Pages (sin servicios externos)
+
+Este repo ahora incluye el workflow [`deploy-pages.yml`](./.github/workflows/deploy-pages.yml) para publicar automaticamente la carpeta `public/` en GitHub Pages usando GitHub Actions.
+
+Pasos:
+
+1. Sube este proyecto a un repositorio de GitHub y usa `main` como rama principal.
+2. Haz `git push origin main`.
+3. GitHub ejecutara el workflow **Deploy GitHub Pages**:
+   - instala dependencias con `npm ci`
+   - ejecuta `npm test`
+   - publica `public/` en GitHub Pages
+4. Si GitHub te lo solicita en `Settings > Pages`, selecciona **GitHub Actions** como fuente de publicacion.
+5. La URL final quedara con esta forma:
+
+```text
+https://<tu-usuario>.github.io/<tu-repo>/
+```
+
+Importante:
+
+- GitHub Pages solo sirve archivos estaticos. No ejecuta `Node.js`, `Express` ni `SQLite`.
+- Por eso, en GitHub la interfaz se publica en **modo demo** con persistencia en `localStorage` del navegador.
+- El frontend publicado no depende de CDNs externos en runtime; los assets necesarios viajan dentro del repo.
+- El modo full-stack real sigue funcionando en local con `npm run dev`.
+- Si quieres previsualizar el modo GitHub Pages en local, abre la app con `?demo=1`.
+
+## Despliegue externo opcional en Render
 
 Este repo incluye `render.yaml` para crear el servicio automaticamente.
 

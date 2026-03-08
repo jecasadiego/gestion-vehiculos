@@ -1,0 +1,95 @@
+.bi {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.25em;
+  font-style: normal;
+  line-height: 1;
+}
+
+.bi::before {
+  display: inline-block;
+}
+
+.bi-car-front-fill::before {
+  content: "\1F697";
+}
+
+.bi-grid-fill::before,
+.bi-grid-3x3-gap-fill::before {
+  content: "\25A6";
+}
+
+.bi-terminal::before {
+  content: ">_";
+}
+
+.bi-sliders::before,
+.bi-gear-wide-connected::before {
+  content: "\2699";
+}
+
+.bi-shield-check::before,
+.bi-check2-circle::before,
+.bi-check2-square::before {
+  content: "\2713";
+}
+
+.bi-speedometer2::before {
+  content: "\23F1";
+}
+
+.bi-cone-striped::before,
+.bi-exclamation-triangle-fill::before {
+  content: "\26A0";
+}
+
+.bi-box-arrow-in-right::before {
+  content: "\21A9";
+}
+
+.bi-box-arrow-right::before {
+  content: "\21AA";
+}
+
+.bi-truck::before {
+  content: "\1F69A";
+}
+
+.bi-people-fill::before {
+  content: "\1F465";
+}
+
+.bi-cash-coin::before,
+.bi-wallet2::before {
+  content: "\0024";
+}
+
+.bi-plus-square::before,
+.bi-person-plus-fill::before {
+  content: "\002B";
+}
+
+.bi-person-vcard-fill::before {
+  content: "\1F4C7";
+}
+
+.bi-clipboard2-pulse-fill::before {
+  content: "\1F4CB";
+}
+
+.bi-save2-fill::before {
+  content: "\1F4BE";
+}
+
+.bi-search::before {
+  content: "\1F50D";
+}
+
+.bi-x-lg::before {
+  content: "\00D7";
+}
+
+.bi-door-open-fill::before {
+  content: "\1F6AA";
+}

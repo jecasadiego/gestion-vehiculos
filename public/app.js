@@ -1,4 +1,7 @@
 const API_BASE = "/api/v1";
+const apiAdapter = window.MockParkingApi || { isDemoMode: false };
+const IS_DEMO_MODE = Boolean(apiAdapter.isDemoMode);
+const API_READY_TEXT = IS_DEMO_MODE ? "Demo GitHub" : "Conectado";
 
 const state = {
   cells: [],
@@ -127,7 +130,7 @@ const beginApiCall = () => {
 const endApiCall = () => {
   state.api.pending = Math.max(0, state.api.pending - 1);
   if (state.api.pending === 0 && !state.api.lastError) {
-    setApiStatus("ok", "Conectado");
+    setApiStatus("ok", API_READY_TEXT);
   }
 };
 
@@ -140,7 +143,7 @@ const markApiError = () => {
     if (state.api.pending > 0) {
       setApiStatus("sync", "Sincronizando");
     } else {
-      setApiStatus("ok", "Conectado");
+      setApiStatus("ok", API_READY_TEXT);
     }
   }, 3000);
 };
@@ -180,6 +183,10 @@ const notifyError = (text) => {
 const request = async (path, options = {}) => {
   beginApiCall();
   try {
+    if (IS_DEMO_MODE) {
+      return await apiAdapter.request(path, options);
+    }
+
     const response = await fetch(`${API_BASE}${path}`, {
       headers: {
         "Content-Type": "application/json",
@@ -916,8 +923,13 @@ const bootstrap = async () => {
   bindEvents();
   activateMainTab(state.activeMainTab);
   activateAdminTab(state.activeAdminTab);
+  setApiStatus("ok", API_READY_TEXT);
   await refreshCoreData();
-  notifyInfo("Interfaz con iconos y modales de operacion habilitada.");
+  notifyInfo(
+    IS_DEMO_MODE
+      ? "Modo demo GitHub Pages activo. Los datos viven en este navegador."
+      : "Interfaz con iconos y modales de operacion habilitada."
+  );
 };
 
 bootstrap().catch((error) => {
