@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Autos Colombia - Gestion Operativa</title>
+    <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <h1 class="sidebar__title">Dashboard Operario</h1>
+        <div class="brand-card">
+          <span class="brand-icon"><i class="bi bi-car-front-fill"></i></span>
+          <span>Autos Colombia</span>
+        </div>
+
+        <nav class="menu">
+          <button type="button" class="menu__item menu__item--active" data-main-tab="operation">
+            <i class="bi bi-grid-fill icon"></i>
+            <span>Operacion Diaria</span>
+          </button>
+          <button type="button" class="menu__item" data-main-tab="console">
+            <i class="bi bi-terminal icon"></i>
+            <span>Consola Operativa</span>
+          </button>
+          <button type="button" class="menu__item" data-main-tab="admin">
+            <i class="bi bi-sliders icon"></i>
+            <span>Panel Administrativo</span>
+          </button>
+        </nav>
+
+        <p class="sidebar__hint">Entrada y salida disponibles en Operacion Diaria.</p>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div class="topbar__title">
+            <i class="bi bi-shield-check icon"></i>
+            Autos Colombia - Gestion Operativa
+          </div>
+          <div id="apiStatusBadge" class="topbar__status topbar__status--ok">
+            <span class="status-dot"></span>
+            <span id="apiStatusText">Conectado</span>
+          </div>
+        </header>
+
+        <section class="main-tab-switch">
+          <button
+            type="button"
+            class="main-tab-btn main-tab-btn--active"
+            data-main-tab="operation"
+          >
+            <i class="bi bi-speedometer2 icon"></i>
+            <span>Operacion Diaria</span>
+          </button>
+          <button type="button" class="main-tab-btn" data-main-tab="console">
+            <i class="bi bi-terminal icon"></i>
+            <span>Consola Operativa</span>
+          </button>
+          <button type="button" class="main-tab-btn" data-main-tab="admin">
+            <i class="bi bi-gear-wide-connected icon"></i>
+            <span>Panel Administrativo</span>
+          </button>
+        </section>
+
+        <section class="tab-shell">
+          <div id="tab-operation" class="tab-panel tab-panel--active" data-tab-panel="operation">
+            <section class="metric-grid">
+              <article class="metric-card">
+                <h2>
+                  <i class="bi bi-grid-3x3-gap-fill icon"></i>
+                  Celdas Totales:
+                </h2>
+                <strong id="totalCells">0</strong>
+              </article>
+              <article class="metric-card metric-card--warn">
+                <h2>
+                  <i class="bi bi-cone-striped icon"></i>
+                  Celdas Ocupadas:
+                </h2>
+                <strong id="occupiedCells">0</strong>
+              </article>
+              <article class="metric-card metric-card--ok">
+                <h2>
+                  <i class="bi bi-check2-circle icon"></i>
+                  Celdas Disponibles:
+                </h2>
+                <strong id="availableCellsCount">0</strong>
+              </article>
+            </section>
+
+            <section class="panel">
+              <div id="parkingGrid" class="parking-grid"></div>
+              <div class="legend">
+                <span class="legend__item">
+                  <span class="legend__swatch legend__swatch--available"></span>
+                  Libre
+                </span>
+                <span class="legend__item">
+                  <span class="legend__swatch legend__swatch--occupied"></span>
+                  Ocupada
+                </span>
+              </div>
+            </section>
+
+            <div class="quick-action-bar">
+              <button id="openEntryBtn" class="cta-btn">
+                <i class="bi bi-box-arrow-in-right icon"></i>
+                <span>REGISTRAR ENTRADA</span>
+              </button>
+              <button id="openExitBtn" class="cta-btn">
+                <i class="bi bi-box-arrow-right icon"></i>
+                <span>REGISTRAR SALIDA</span>
+              </button>
+            </div>
+          </div>
+
+          <div id="tab-console" class="tab-panel" data-tab-panel="console">
+            <section class="log-panel">
+              <h3>
+                <i class="bi bi-terminal icon"></i>
+                Consola Operativa
+              </h3>
+              <pre id="eventLog">Listo para operar...</pre>
+            </section>
+          </div>
+
+          <div id="tab-admin" class="tab-panel" data-tab-panel="admin">
+            <section class="admin-nav">
+              <button
+                type="button"
+                class="admin-nav__btn admin-nav__btn--active"
+                data-admin-tab="vehicles"
+              >
+                <i class="bi bi-truck icon"></i>
+                <span>Vehiculos</span>
+              </button>
+              <button type="button" class="admin-nav__btn" data-admin-tab="users">
+                <i class="bi bi-people-fill icon"></i>
+                <span>Usuarios</span>
+              </button>
+              <button type="button" class="admin-nav__btn" data-admin-tab="incidents">
+                <i class="bi bi-exclamation-triangle-fill icon"></i>
+                <span>Novedades</span>
+              </button>
+              <button type="button" class="admin-nav__btn" data-admin-tab="payments">
+                <i class="bi bi-cash-coin icon"></i>
+                <span>Pagos</span>
+              </button>
+            </section>
+
+            <section class="admin-content">
+              <article
+                class="admin-panel admin-panel--active"
+                id="admin-panel-vehicles"
+                data-admin-panel="vehicles"
+              >
+                <h3>
+                  <i class="bi bi-plus-square icon"></i>
+                  Registro Vehiculos
+                </h3>
+                <label class="field">
+                  Placa
+                  <input id="vehiclePlate" type="text" placeholder="ABC123" />
+                </label>
+                <label class="field">
+                  Nombre Cliente
+                  <input id="vehicleOwnerName" type="text" placeholder="Nombre completo" />
+                </label>
+                <div class="field-row">
+                  <label class="field">
+                    Telefono
+                    <input id="vehiclePhone" type="text" placeholder="3000000000" />
+                  </label>
+                  <label class="field">
+                    Estado Mensualidad
+                    <select id="vehicleMonthlyStatus">
+                      <option value="Activa">Activa</option>
+                      <option value="Pendiente">Pendiente</option>
+                      <option value="Inactiva">Inactiva</option>
+                    </select>
+                  </label>
+                </div>
+                <label class="checkbox-line">
+                  <input id="vehicleIsMonthly" type="checkbox" checked />
+                  Mensualidad activa para este vehiculo
+                </label>
+                <button id="createVehicleBtn" class="action-btn">
+                  <i class="bi bi-car-front-fill icon"></i>
+                  <span>Crear Vehiculo</span>
+                </button>
+
+                <div class="mini-list">
+                  <h4>Ultimos Vehiculos</h4>
+                  <ul id="vehiclesList" class="record-list"></ul>
+                </div>
+              </article>
+
+              <article class="admin-panel" id="admin-panel-users" data-admin-panel="users">
+                <h3>
+                  <i class="bi bi-person-vcard-fill icon"></i>
+                  Operarios (Opcional)
+                </h3>
+                <label class="field">
+                  Nombre Completo
+                  <input id="userFullName" type="text" placeholder="Operario" />
+                </label>
+                <div class="field-row">
+                  <label class="field">
+                    Documento
+                    <input id="userDocument" type="text" placeholder="10203040" />
+                  </label>
+                  <label class="field">
+                    Telefono
+                    <input id="userPhone" type="text" placeholder="3010000000" />
+                  </label>
+                </div>
+                <button id="createUserBtn" class="action-btn">
+                  <i class="bi bi-person-plus-fill icon"></i>
+                  <span>Crear Usuario</span>
+                </button>
+
+                <div class="mini-list">
+                  <h4>Ultimos Usuarios</h4>
+                  <ul id="usersList" class="record-list"></ul>
+                </div>
+              </article>
+
+              <article
+                class="admin-panel"
+                id="admin-panel-incidents"
+                data-admin-panel="incidents"
+              >
+                <h3>
+                  <i class="bi bi-clipboard2-pulse-fill icon"></i>
+                  Registrar Novedad
+                </h3>
+                <label class="field">
+                  Placa
+                  <input id="incidentPlate" type="text" placeholder="AAA000" />
+                </label>
+                <label class="field">
+                  Descripcion
+                  <textarea
+                    id="incidentDescription"
+                    rows="4"
+                    placeholder="Ej: espejo lateral con golpe"
+                  ></textarea>
+                </label>
+                <button id="registerIncidentBtn" class="action-btn">
+                  <i class="bi bi-save2-fill icon"></i>
+                  <span>Guardar Novedad</span>
+                </button>
+              </article>
+
+              <article class="admin-panel" id="admin-panel-payments" data-admin-panel="payments">
+                <h3>
+                  <i class="bi bi-wallet2 icon"></i>
+                  Registrar Pago Mensual
+                </h3>
+                <label class="field">
+                  Placa
+                  <input id="paymentPlate" type="text" placeholder="AAA000" />
+                </label>
+                <div class="field-row">
+                  <label class="field">
+                    Valor
+                    <input id="paymentAmount" type="number" min="0" step="1000" />
+                  </label>
+                  <label class="field">
+                    Metodo
+                    <select id="paymentMethod">
+                      <option value="Efectivo">Efectivo</option>
+                      <option value="Transferencia">Transferencia</option>
+                      <option value="Tarjeta">Tarjeta</option>
+                    </select>
+                  </label>
+                </div>
+                <label class="field">
+                  Periodo
+                  <input id="paymentPeriod" type="text" placeholder="2026-03" />
+                </label>
+                <button id="registerPaymentBtn" class="action-btn">
+                  <i class="bi bi-check2-circle icon"></i>
+                  <span>Guardar Pago</span>
+                </button>
+              </article>
+            </section>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div id="entryModal" class="modal" aria-hidden="true">
+      <div class="modal__dialog">
+        <header class="modal__header">
+          <h3>
+            <i class="bi bi-box-arrow-in-right icon"></i>
+            Registrar Entrada
+          </h3>
+          <button type="button" class="modal__close" data-modal-close="entry">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </header>
+        <div class="modal__body">
+          <section class="modal__form">
+            <label class="field">
+              Placa del Vehiculo
+              <div class="inline-input">
+                <input id="entryPlate" type="text" placeholder="AAA000" />
+                <span id="plateCheck" class="check-badge">-</span>
+              </div>
+            </label>
+
+            <label class="field">
+              Nombre del Cliente
+              <input
+                id="entryOwnerName"
+                type="text"
+                placeholder="Display only after validation"
+                disabled
+              />
+            </label>
+
+            <div class="status-row">
+              Estado Mensualidad
+              <span id="monthlyStatus" class="badge">Sin validar</span>
+            </div>
+
+            <button id="validatePlateBtn" class="action-btn">
+              <i class="bi bi-search icon"></i>
+              <span>Validar Placa</span>
+            </button>
+
+            <div class="selected-cell-box">
+              Celda seleccionada:
+              <strong id="entrySelectedCell">Ninguna</strong>
+            </div>
+
+            <button id="registerEntryBtn" class="action-btn action-btn--dark">
+              <i class="bi bi-check2-square icon"></i>
+              <span>Confirmar Entrada</span>
+            </button>
+          </section>
+
+          <section class="modal__map">
+            <div class="modal-summary">
+              <article class="modal-summary__item">
+                <span>Total</span>
+                <strong id="entryModalTotal">0</strong>
+              </article>
+              <article class="modal-summary__item modal-summary__item--warn">
+                <span>Ocupadas</span>
+                <strong id="entryModalOccupied">0</strong>
+              </article>
+              <article class="modal-summary__item modal-summary__item--ok">
+                <span>Disponibles</span>
+                <strong id="entryModalAvailable">0</strong>
+              </article>
+            </div>
+            <div id="entryModalGrid" class="modal-grid"></div>
+            <div class="legend">
+              <span class="legend__item">
+                <span class="legend__swatch legend__swatch--available"></span>
+                Libre
+              </span>
+              <span class="legend__item">
+                <span class="legend__swatch legend__swatch--occupied"></span>
+                Ocupada
+              </span>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <div id="exitModal" class="modal" aria-hidden="true">
+      <div class="modal__dialog">
+        <header class="modal__header">
+          <h3>
+            <i class="bi bi-box-arrow-right icon"></i>
+            Registrar Salida
+          </h3>
+          <button type="button" class="modal__close" data-modal-close="exit">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </header>
+        <div class="modal__body">
+          <section class="modal__form">
+            <label class="field">
+              Placa del Vehiculo
+              <input id="exitPlate" type="text" placeholder="AAA000" />
+            </label>
+
+            <button id="searchActiveBtn" class="action-btn">
+              <i class="bi bi-search icon"></i>
+              <span>Buscar Registro Activo</span>
+            </button>
+
+            <div class="detail-box">
+              <h3>Detalles de Estancia</h3>
+              <p><strong>Placa:</strong> <span id="detailPlate">-</span></p>
+              <p><strong>Celda Ocupada:</strong> <span id="detailCell">-</span></p>
+              <p><strong>Fecha Entrada:</strong> <span id="detailEntry">-</span></p>
+            </div>
+
+            <div class="field-row">
+              <label class="field">
+                Valor pago (opcional)
+                <input id="exitAmount" type="number" min="0" step="1000" />
+              </label>
+              <label class="field">
+                Metodo
+                <select id="exitMethod">
+                  <option value="Efectivo">Efectivo</option>
+                  <option value="Transferencia">Transferencia</option>
+                  <option value="Tarjeta">Tarjeta</option>
+                </select>
+              </label>
+            </div>
+
+            <button id="registerExitBtn" class="action-btn action-btn--dark">
+              <i class="bi bi-door-open-fill icon"></i>
+              <span>Confirmar Salida</span>
+            </button>
+          </section>
+
+          <section class="modal__map">
+            <div class="modal-summary">
+              <article class="modal-summary__item">
+                <span>Total</span>
+                <strong id="exitModalTotal">0</strong>
+              </article>
+              <article class="modal-summary__item modal-summary__item--warn">
+                <span>Ocupadas</span>
+                <strong id="exitModalOccupied">0</strong>
+              </article>
+              <article class="modal-summary__item modal-summary__item--ok">
+                <span>Disponibles</span>
+                <strong id="exitModalAvailable">0</strong>
+              </article>
+            </div>
+            <div id="exitModalGrid" class="modal-grid"></div>
+            <div class="legend">
+              <span class="legend__item">
+                <span class="legend__swatch legend__swatch--available"></span>
+                Libre
+              </span>
+              <span class="legend__item">
+                <span class="legend__swatch legend__swatch--occupied"></span>
+                Ocupada
+              </span>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <div id="toastStack" class="toast-stack" aria-live="polite"></div>
+    <script src="./app.js"></script>
+  </body>
+</html>
