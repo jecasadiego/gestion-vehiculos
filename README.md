@@ -55,6 +55,25 @@ npm test
 powershell -ExecutionPolicy Bypass -File .\scripts\manual-test-endpoints.ps1
 ```
 
+## Despliegue en Render (desde GitHub)
+
+Este repo incluye `render.yaml` para crear el servicio automaticamente.
+
+1. En Render, crea un nuevo servicio usando **Blueprint** y conecta este repositorio.
+2. Render detectara `render.yaml` y creara un Web Service Node con:
+   - `startCommand`: `npm start`
+   - Health check: `/api/v1/health`
+   - Disco persistente montado en `/var/data`
+   - `DB_PATH=/var/data/parking.db`
+3. Haz deploy y espera estado **Live**.
+4. Valida:
+   - `GET /api/v1/health`
+   - apertura de la raiz `/` para la interfaz web.
+
+Notas:
+- Para SQLite en produccion necesitas disco persistente. En Render esto requiere plan con disk (no Free).
+- No definas `PORT`; Render lo inyecta automaticamente.
+
 ## Endpoints Principales
 
 - `GET /api/v1/health`
